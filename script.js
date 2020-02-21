@@ -68,7 +68,8 @@ function getWeatherByCityName(event) {
            response => {
                console.log("RESPONSE", response)
                if(response.cod == "404") {
-
+                WEATHER_DISPLAY.innerText="";
+                printLetterByLetter(WEATHER_DISPLAY, "Oh, sorry, but I can't find that city. Lets try again!", 100)
                }
                if(response.cod == "200") {
                    WEATHER_DISPLAY.innerText=""
