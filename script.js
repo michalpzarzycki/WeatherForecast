@@ -1,8 +1,27 @@
 const SUBMIT_BTN = document.querySelector('#submitButton');
 const INPUT = document.querySelector('#input');
 const WEATHER_DISPLAY = document.querySelector('.weatherDisplay')
-
+WEATHER_DISPLAY.innerText = 'hi, my name is Kinga, I am a weatherwoman, what city are you looking for weather in?'
 let cityName = "";
+
+
+
+
+function printLetterByLetter(destination, message, speed){
+    var i = 0;
+    var interval = setInterval(function(){
+        destination.innerHTML += message.charAt(i);
+        i++;
+        if (i > message.length){
+            clearInterval(interval);
+        }
+    }, speed);
+}
+
+// printLetterByLetter(WEATHER_DISPLAY, "NO HEJKA SPORTOWE SWIRY", 100)
+
+
+
 
 function getWeather(lat, long, apikey = "a54a5cf8aa1c0dcd3e1272b77860a1c9", lang = "pl", units = "si") {
     const cors = "https://cors-anywhere.herokuapp.com/"
@@ -25,21 +44,21 @@ function getWeather(lat, long, apikey = "a54a5cf8aa1c0dcd3e1272b77860a1c9", lang
 
 
 
-window.addEventListener('load', () => {
-    let latitude;
-    let longitude;
-    WEATHER_DISPLAY.textContent = `Zezwol na dostép do lokazlizacji a powiem Ci jaka jest pogoda u Ciebie`;
+// window.addEventListener('load', () => {
+//     let latitude;
+//     let longitude;
+//     WEATHER_DISPLAY.textContent = `Zezwol na dostép do lokazlizacji a powiem Ci jaka jest pogoda u Ciebie`;
     
-    if (navigator.geolocation) {
-        navigator.geolocation.getCurrentPosition(position => {
-            latitude = position.coords.latitude;
-            longitude = position.coords.longitude;
-            getWeather(latitude, longitude);
-        })
-    } 
+//     if (navigator.geolocation) {
+//         navigator.geolocation.getCurrentPosition(position => {
+//             latitude = position.coords.latitude;
+//             longitude = position.coords.longitude;
+//             getWeather(latitude, longitude);
+//         })
+//     } 
 
 
-})
+// })
 
 function getWeatherByCityName(event) {
     let cityName = INPUT.value.split(" ").join("+");
@@ -52,13 +71,21 @@ function getWeatherByCityName(event) {
 
                }
                if(response.cod == "200") {
-                   WEATHER_DISPLAY.textContent = `Temp: ${Math.round(response.list[0].main.temp-273.15)}°C`
+                   WEATHER_DISPLAY.innerText=""
+                   let tempCom = Math.round(response.list[0].main.feels_like-273.15)<5 ? "not too warm :(" : "meh,it could be worse";
+                   let text = `Now in ${INPUT.value} is temp: ${Math.round(response.list[0].main.temp-273.15)}°C
+                   sensed temperature is ${Math.round(response.list[0].main.feels_like-273.15)}°C. ${tempCom}
+                   Humidity: ${response.list[0].main.humidity}%
+                   Pressure: ${response.list[0].main.pressure}hPa
+                   If you want me to check the another temperature, just enter the city!                   `
+                printLetterByLetter(WEATHER_DISPLAY, text , 100)
+                  
                }
            }
 
        )
        .catch(err => {
-           alert("COŚ POSZŁO NIE TAK")
+           console.log("COŚ POSZŁO NIE TAK", err)
        })
 
 
